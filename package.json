@@ -1,0 +1,22 @@
+{
+  "name": "self-beatzz",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/voice": "^0.17.0",
+    "discord.js-selfbot-v13": "^3.1.4",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "opusscript": "^0.0.8",
+    "yt-search": "^2.11.0",
+    "ytdl-core": "github:fent/node-ytdl-core",
+    "ytpl": "^2.3.0",
+    "sodium":"^3.0.2"
+  }
+}
