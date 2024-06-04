@@ -32,18 +32,18 @@ client.on('ready', async () => {
 
     const _channel = await client.channels.cache.get(spamChannelId);
 
-    
-function getRandomInterval(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
-function spam() {
-    const result = Math.random().toString(36).substring(2, 15);
-    _channel.send(result)
-    const randomInterval = getRandomInterval(50000, 60000); // Random interval for spam between 1 second and 5 seconds
-    setTimeout(spam, randomInterval);
-}
-spam();
+    function getRandomInterval(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function spam() {
+        const result = Math.random().toString(36).substring(2, 15);
+        _channel?.send(result)
+        const randomInterval = getRandomInterval(50000, 60000); // Random interval for spam between 1 second and 5 seconds
+        setTimeout(spam, randomInterval);
+    }
+    spam();
 
 });
 
