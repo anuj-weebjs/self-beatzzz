@@ -8,6 +8,7 @@ const app = express();
 require('dotenv').config();
 //
 const token = process.env.TOKEN;
+const spamChannelId = process.env.SPAM_CHANNEL_ID;
 
 var client = new Client({ checkUpdate: false });
 
@@ -26,8 +27,24 @@ app.get('/', (req, res) => {
 });
 app.listen(4000);
 
-client.once('ready', () => {
-    console.log('Bot is online!');
+client.on('ready', async () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+
+    const _channel = await client.channels.cache.get(spamChannelId);
+
+    
+function getRandomInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function spam() {
+    const result = Math.random().toString(36).substring(2, 15);
+    _channel.send(result)
+    const randomInterval = getRandomInterval(50000, 60000); // Random interval for spam between 1 second and 5 seconds
+    setTimeout(spam, randomInterval);
+}
+spam();
+
 });
 
 player.on(AudioPlayerStatus.Idle, () => {
@@ -45,6 +62,10 @@ player.on('error', error => {
     console.error('Error:', error);
     playNext();
 });
+
+
+
+
 
 client.on('messageCreate', async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -114,7 +135,7 @@ client.on('messageCreate', async message => {
         } else {
             message.channel.send('No previous track to play.');
         }
-    }else if (command === 'remove') {
+    } else if (command === 'remove') {
         if (args.length === 0) {
             return message.channel.send('Please provide the position of the song to remove from the queue.');
         }
@@ -127,14 +148,14 @@ client.on('messageCreate', async message => {
 
         const removedSong = queue.splice(position - 1, 1)[0];
         message.channel.send(`Removed song at position ${position} from the queue: ${removedSong.url}`);
-    }else if (command === 'queue') {
+    } else if (command === 'queue') {
         if (queue.length === 0) {
             return message.channel.send('The queue is empty.');
         }
 
         const queueList = queue.map((song, index) => `${index + 1}. ${song.url}`).join('\n');
         message.channel.send(`Current queue:\n${queueList}`);
-    }else if (command === 'help') {
+    } else if (command === 'help') {
         const helpEmbed = new EmbedBuilder()
             .setColor('#0099ff')
             .setTitle('Music Bot Commands')
@@ -148,7 +169,7 @@ client.on('messageCreate', async message => {
                 { name: '!previous', value: 'Play the previous track from the history.' },
                 { name: '!help', value: 'Show this help message.' }
             )
-            .setFooter({text:'Enjoy your music!'});
+            .setFooter({ text: 'Enjoy your music!' });
 
         message.channel.send({ embeds: [helpEmbed] });
     }
@@ -183,7 +204,7 @@ async function playCurrent() {
         quality: 'highestaudio',
         highWaterMark: 1 << 25
     });
-    
+
     const resource = createAudioResource(stream, {
         inputType: stream.readable ? stream.readableType : stream.type,
         inlineVolume: true
